@@ -41,6 +41,7 @@ export default function PostForm() {
     location: "",
   });
 
+  const [errors, setErrors] = useState({});
   const [file, setFile] = useState({});
 
   function handlechange(e) {
@@ -53,6 +54,9 @@ export default function PostForm() {
 
   async function handlesubmit(e) {
     e.preventDefault();
+    if (!validate()) {
+      return;
+    }
     try {
       const token = localStorage.getItem("token");
       const decoded = jwtDecode(token);
@@ -76,6 +80,33 @@ export default function PostForm() {
       console.log(e);
     }
 
+    function validate() {
+      const tempErrors = {};
+      if (!formData.title) {
+        tempErrors.title = "Title is required"
+      }
+
+      if (!formData.amount) {
+        tempErrors.amount = "Amount is required"
+      } else if (Number(tempErrors.amount) <= 0) {
+        tempErrors.amount = "Please enter a valid amount"
+      }
+
+      if (!formData.description) {
+        tempErrors.description = "Description is required"
+      }
+
+      if (!formData.location) {
+        tempErrors.location = "Location is required"
+      }
+      if (!file || !file.name) {
+        tempErrors.file = "Project image is required";
+      }
+
+      setErrors(tempErrors)
+      return Object.keys(tempErrors).length === 0;
+    }
+
     setFormData({
       title: "",
       description: "",
@@ -89,7 +120,7 @@ export default function PostForm() {
     <>
       <Container
         sx={{
-          mt: 12,
+          my: 12,
           width: { xs: "93%", sm: "80%", md: "60%", lg: "50%" },
         }}
       >
@@ -105,7 +136,9 @@ export default function PostForm() {
           </Typography>
 
           <TextField
-          color="success"
+            error={!!errors.title}
+            helperText={errors.title}
+            color="success"
             label="What are you naming your project?"
             variant="outlined"
             name="title"
@@ -126,10 +159,12 @@ export default function PostForm() {
             multiline
             rows={4}
             required
+            error={!!errors.description}
+            helperText={errors.description}
           />
 
           <FormControl fullWidth sx={{ m: 1 }}>
-            <InputLabel   color="success" htmlFor="outlined-adornment-amount">Amount</InputLabel>
+            <InputLabel color="success" htmlFor="outlined-adornment-amount">Amount</InputLabel>
             <OutlinedInput
               id="outlined-adornment-amount"
               startAdornment={<InputAdornment position="start">₹</InputAdornment>}
@@ -138,7 +173,9 @@ export default function PostForm() {
               onChange={handlechange}
               label="Amount"
               required
-                color="success"
+              color="success"
+              error={!!errors.amount}
+              helperText={errors.amount}
             />
           </FormControl>
 
@@ -151,6 +188,8 @@ export default function PostForm() {
             onChange={handlechange}
             fullWidth
             required
+            error={!!errors.location}
+            helperText={errors.location}
           />
 
           <Typography variant="body2" sx={{ color: "grey", mt: 1 }}>
@@ -172,6 +211,12 @@ export default function PostForm() {
               name="file"
             />
           </Button>
+
+          {errors.file && (
+            <Typography variant="body2" sx={{ color: "red", mt: 0.5 }}>
+              {errors.file}
+            </Typography>
+          )}
 
           <Button
             type="submit"
