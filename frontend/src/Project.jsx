@@ -32,6 +32,7 @@ export default function Project() {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/posts/${projectId}`);
         setData(response.data);
         setPoints(response.data.karmaPoints);
+        
       } catch (e) {
         console.log(e);
       }
@@ -54,7 +55,7 @@ export default function Project() {
   useEffect(() => {
     if (!userId) return;
     async function getLikes() {
-      const likes = await axios.get(`http://localhost:8080/getlikes`, { params: { userId } });
+      const likes = await axios.get(`${import.meta.env.VITE_API_URL}/getlikes`, { params: { userId } });
       setLikedPosts(new Set(likes.data));
     }
     getLikes();
@@ -62,7 +63,7 @@ export default function Project() {
 
   async function addPoint(id, isLiked) {
     try {
-      await axios.post(`http://localhost:8080/karmapoint`, { userId, postId: id, contains: isLiked });
+      await axios.post(`${import.meta.env.VITE_API_URL}/karmapoint`, { userId, postId: id, contains: isLiked });
     } catch (err) {
       console.log(err);
     }
@@ -76,17 +77,16 @@ export default function Project() {
 
     try {
       const payAmount = data.amount;
-      const response = await axios.post("http://localhost:8080/create-order", { amount: payAmount });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/create-order`, { amount: payAmount });
       const order = response.data;
-
       const options = {
-        key: "rzp_test_RNIYzLqFP0GYlY",
+        key: `${import.meta.env.VITE_RAZORPAY_API_KEY}`,
         amount: order.amount,
         currency: order.currency,
         name: "Mother Earth",
         description: "Contribution to project",
         order_id: order.id,
-        prefill: { name: data.name, email: data.email, contact: "9999999999" },
+        prefill: { name: data.name, email: data.email, contact: "999999999" },
         theme: { color: "#4caf50" },
       };
 
@@ -94,7 +94,7 @@ export default function Project() {
       rzp.open();
     } catch (err) {
       console.error(err);
-      alert("Payment failed. Check console.");
+      showError("Payment failed. Please retry later or call Minaal.");
     }
   }
 
@@ -102,7 +102,6 @@ export default function Project() {
 
   return (
     <Grid container spacing={4} sx={{ mt: 12, mb: 4, px: { xs: 2, md: 6 } }}>
-      {/* LEFT SIDE */}
       <Grid item xs={12} md={8}>
         <Typography variant="h4" fontWeight="bold" gutterBottom>
           {data.title}
