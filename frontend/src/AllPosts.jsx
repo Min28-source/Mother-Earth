@@ -29,11 +29,16 @@ export default function AllPosts() {
 
   // Fetch all posts
   useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/users`);
-      setData(response.data);
-    };
-    fetchPosts();
+    try {
+      const fetchPosts = async () => {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/post`);
+        setData(response.data);
+      };
+      fetchPosts();
+      console.log(data)
+    } catch (e) {
+      console.log(e)
+    }
   }, []);
 
   // Get logged in user id
@@ -96,15 +101,15 @@ export default function AllPosts() {
       >
         {data.length > 0 ? (
           data.map((item) => (
-             <Grid
-            key={item._id}
-            size={{
-              xs: 12,
-              sm: 12,
-              md: 6,
-              lg: 6,
-            }}
-          >
+            <Grid
+              key={item._id}
+              size={{
+                xs: 12,
+                sm: 12,
+                md: 6,
+                lg: 6,
+              }}
+            >
               <Card
                 sx={{
                   cursor: "pointer",
