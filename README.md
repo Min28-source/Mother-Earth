@@ -27,9 +27,9 @@ From planting trees to funding sustainable innovations, *Mother Earth* is here t
 - 🍃 MongoDB with Mongoose  
 
 **Other Integrations**  
-- 💰 Razorpay (or Stripe) for payment handling  
+- 💰 Razorpay for payment handling  
 - 🔑 JWT for authentication  
-- ☁️ Cloudinary (or alternative) for media storage  
+- ☁️ Cloudinary for media storage  
 
 ---
 
